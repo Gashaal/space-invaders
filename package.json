@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx jest",
-    "start": "NODE_ENV=development webpack-dev-server --open",
+    "start": "NODE_ENV=development webpack-dev-server --port 3000 --hot --host 0.0.0.0",
     "build": "NODE_ENV=production webpack"
   },
   "repository": {

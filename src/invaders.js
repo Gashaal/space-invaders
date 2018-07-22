@@ -59,11 +59,8 @@ class Invaders {
       for (let j = 0; j < params.columns; j++) {
         ({x, y} = this.store.invaders.list[i][j]);
 
-        ctx.beginPath();
-        ctx.rect(x, y, params.width, params.height);
-        ctx.fillStyle = '#0095DD';
-        ctx.fill();
-        ctx.closePath();
+        let sprite = this.store.invaders.sprite.bottom[0];
+        ctx.drawImage(this.store.sprite, sprite.x, sprite.y, sprite.w, sprite.h, x, y, params.width, params.height);
       }
     }
   }

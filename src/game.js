@@ -17,7 +17,7 @@ class Game {
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, 480, 320);
+    this.ctx.clearRect(0, 0, 800, 600);
 
     this.cannon.draw();
     this.invaders.draw();
@@ -34,7 +34,7 @@ class Game {
         this.cannon.moveLeft();
         break;
       case 38:
-        this.cannon.shot();
+        this.cannon.fire();
     }
   }
 }
