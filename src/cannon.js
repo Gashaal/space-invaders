@@ -1,4 +1,4 @@
-class Cannon {
+export default class Cannon {
   constructor(ctx, store) {
     this.ctx = ctx;
     this.store = store;
@@ -14,6 +14,11 @@ class Cannon {
   }
 
   draw() {
+    this.drawCannon();
+    this.drawShells();
+  }
+
+  drawCannon() {
     const {
       sprite,
       cannon: {
@@ -28,6 +33,16 @@ class Cannon {
     this.ctx.drawImage(sprite, sX, sY, sW, sH, dx, dy, dWidth, dHeight);
   }
 
+  drawShells() {
+    const {shells, shellDy, shellW, shellH, shellColor} = this.store.cannon;
+
+    this.ctx.fillStyle = shellColor;
+    shells.forEach((shell) => {
+      this.ctx.fillRect(shell.x, shell.y, shellW, shellH);
+      shell.y -= shellDy;
+    });
+  }
+
   moveRight() {
     this.store.cannon.x += this.store.cannon.dx;
   }
@@ -35,7 +50,13 @@ class Cannon {
   moveLeft() {
     this.store.cannon.x -= this.store.cannon.dx;
   }
+
+  fire() {
+    const {x, y, width, shellW} = this.store.cannon;
+
+    this.store.cannon.shells.push({
+      x: x + width / 2 - shellW / 2,
+      y: y,
+    });
+  }
 }
-
-
-export default Cannon;

@@ -40,3 +40,14 @@ test('move left', () => {
   cannon.moveLeft();
   expect(cannon.store.cannon.x).toBe(x - cannon.store.cannon.dx);
 });
+
+test('fire', () => {
+  const {x, y, width, height, shells, shellW} = cannon.store.cannon;
+
+  expect(Array.isArray(shells)).toBe(true);
+  cannon.fire();
+
+  expect(shells.length).toBe(1);
+  expect(shells[0].x).toBe(x + width / 2 - shellW / 2);
+  expect(shells[0].y).toBe(y);
+});
