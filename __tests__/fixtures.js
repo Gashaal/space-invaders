@@ -9,7 +9,7 @@ export default {
     height: 32,
     lives: 3,
     dx: 7,
-    shellDy: 2,
+    shellDy: 5,
     shellW: 5,
     shellH: 5,
     shellColor: '#73f440',
@@ -34,14 +34,14 @@ export default {
       stepX: 8,
       stepY: 8,
     },
-    initCoords: {
-      y: 35,
+    rectCoords: {
+      minY: 35,
     },
     list: [],
-    sprite: {
-      bottom: [{x: 0, y: 0, w: 51, h: 34}, {x: 0, y: 102, w: 51, h: 34}],
-      middle: [{x: 0, y: 137, w: 50, h: 33}, {x: 0, y: 170, w: 50, h: 34}],
-      top: [{x: 0, y: 68, w: 50, h: 32}, {x: 0, y: 34, w: 50, h: 32}],
+    spritesParams: {
+      bottom: [{sX: 0, sY: 68, sW: 50, sH: 32}, {sX: 0, sY: 34, sW: 50, sH: 32}],
+      middle: [{sX: 0, sY: 137, sW: 50, sH: 33}, {sX: 0, sY: 170, sW: 50, sH: 34}],
+      top: [{sX: 0, sY: 0, sW: 51, sH: 34}, {sX: 0, sY: 102, sW: 51, sH: 34}],
     },
   },
   sprite: sprite,

@@ -2,20 +2,39 @@ class Invaders {
   constructor(ctx, store) {
     this.ctx = ctx;
     this.store = store;
+    this.moveDirection = 'left';
+    this.animateState = false;
+    this.timeout = 750;
+    this.delay = new Date();
 
+    this.calcInitRectCoords();
     this.calcInitialCoords();
   }
 
   calcLeftCornerCoords() {
     const {columns, width, marginX} = this.store.invaders.params;
-    const invadersRectWidth = columns * width + (columns - 1) * marginX; // 40 * 5 20 * 4
+    const invadersRectWidth = columns * width + (columns - 1) * marginX;
 
     this.store.invaders.initCoords.x = (this.store.ctxWidth - invadersRectWidth) / 2;
   }
 
+  calcInitRectCoords() {
+    const {rows, columns, width, height, marginX, marginY} = this.store.invaders.params;
+
+    const invadersRectWidth = columns * width + (columns - 1) * marginX;
+    const invadersRectHeight = rows * height + (rows - 1) * marginY;
+
+    const minX = (this.store.ctxWidth - invadersRectWidth) / 2;
+    const maxX = minX + invadersRectWidth;
+    const maxY = this.store.invaders.rectCoords.minY + invadersRectHeight;
+
+    this.store.invaders.rectCoords.maxX = maxX;
+    this.store.invaders.rectCoords.minX = minX;
+    this.store.invaders.rectCoords.maxY = maxY;
+  }
+
   calcInitialCoords() {
-    this.calcLeftCornerCoords();
-    const {x: initX, y: initY} = this.store.invaders.initCoords;
+    const {minX: initX, minY: initY} = this.store.invaders.rectCoords;
     const params = this.store.invaders.params;
     let invadersList = this.store.invaders.list;
 
@@ -32,40 +51,97 @@ class Invaders {
   }
 
   calcCoords(dx, dy) {
+    let xList = [];
+    let yList = [];
+
     this.store.invaders.list.forEach((invadersRow) => {
       invadersRow.forEach((invader) => {
         invader.x += dx;
         invader.y += dy;
+
+        xList.push(invader.x);
+        yList.push(invader.y);
       });
     });
+
+    this.store.invaders.rectCoords = {
+      minX: Math.min.apply(null, xList),
+      maxX: Math.max.apply(null, xList),
+      minY: Math.min.apply(null, yList),
+      maxY: Math.max.apply(null, yList),
+    };
   }
 
   move() {
-    const params = this.store.invaders.params;
-    const {x: initX, y: initY} = this.store.invaders.initCoords;
+    const {rectCoords, rectMargin, params: {dx, dy, width}} = this.store.invaders;
+    let moveDy = 0;
+    let moveDx;
 
-    const x = initX + params.dx * params.dxColumn;
-    const y = initY + params.dy * params.dyRow;
+    if (this.moveDirection === 'left') {
+      if ((rectCoords.minX - dx) >= rectMargin) {
+        moveDx = -dx;
+      } else {
+        moveDx = 0;
+        moveDy = dy;
+        this.moveDirection = 'right';
+      }
+    } else {
+      if ((rectCoords.maxX + dx) <= (this.store.ctxWidth - rectMargin - width)) {
+        moveDx = dx;
+      } else {
+        moveDx = 0;
+        moveDy = dy;
+        this.moveDirection = 'left';
+      }
+    }
 
-    this.calcCoords(x, y);
+    this.calcCoords(moveDx, moveDy);
   }
 
   draw() {
-    const ctx = this.ctx;
-    const params = this.store.invaders.params;
-    let x, y;
+    const {
+      sprite,
+      invaders: {
+        spritesParams,
+        params: {
+          rows,
+          columns,
+          width: dWidth,
+          height: dHeight,
+        },
+      },
+    } = this.store;
 
-    for (let i = 0; i < params.rows; i++) {
-      for (let j = 0; j < params.columns; j++) {
-        ({x, y} = this.store.invaders.list[i][j]);
+    for (let i = 0; i < rows; i++) {
+      let rowSpriteParams;
+      switch (i) {
+        case 0:
+        case 1:
+          rowSpriteParams = spritesParams.bottom;
+          break;
+        case 2:
+        case 3:
+          rowSpriteParams = spritesParams.middle;
+          break;
+        case 4:
+          rowSpriteParams = spritesParams.top;
+          break;
+      }
 
-        ctx.beginPath();
-        ctx.rect(x, y, params.width, params.height);
-        ctx.fillStyle = '#0095DD';
-        ctx.fill();
-        ctx.closePath();
+      if ((new Date - this.delay) > this.timeout) {
+        this.delay = new Date();
+        this.animateState = !this.animateState;
+      }
+      const {sX, sY, sW, sH} = this.animateState ? rowSpriteParams[0] : rowSpriteParams[1];
+
+      for (let j = 0; j < columns; j++) {
+        const {x: dx, y: dy} = this.store.invaders.list[i][j];
+
+        this.ctx.drawImage(sprite, sX, sY, sW, sH, dx, dy, dWidth, dHeight);
       }
     }
+
+    this.move();
   }
 }
 
