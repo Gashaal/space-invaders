@@ -28,6 +28,63 @@ test('invaders initial coords', () => {
   expect(bottomRightInvader.y).toBe(191);
 });
 
+test('toogle animate sprite', () => {
+  invaders.delay = new Date();
+
+  invaders.toggleAnimate();
+  expect(invaders.animateState).toBe(false);
+
+  setTimeout(() => {
+    invaders.toggleAnimate();
+    expect(invaders.animateState).toBe(true);
+  }, invaders.timeout);
+});
+
+test('get sprite params', () => {
+  invaders.delay = new Date();
+
+  expect(invaders.getSpriteParams(0)).toEqual({sX: 0, sY: 34, sW: 50, sH: 32});
+  expect(invaders.getSpriteParams(1)).toEqual({sX: 0, sY: 34, sW: 50, sH: 32});
+  expect(invaders.getSpriteParams(2)).toEqual({sX: 0, sY: 170, sW: 50, sH: 34});
+  expect(invaders.getSpriteParams(3)).toEqual({sX: 0, sY: 170, sW: 50, sH: 34});
+  expect(invaders.getSpriteParams(4)).toEqual({sX: 0, sY: 102, sW: 51, sH: 34});
+
+  setTimeout(() => {
+    expect(invaders.getSpriteParams(0)).toEqual({sX: 0, sY: 68, sW: 50, sH: 32});
+    expect(invaders.getSpriteParams(1)).toEqual({sX: 0, sY: 68, sW: 50, sH: 32});
+    expect(invaders.getSpriteParams(2)).toEqual({sX: 0, sY: 137, sW: 50, sH: 33});
+    expect(invaders.getSpriteParams(3)).toEqual({sX: 0, sY: 137, sW: 50, sH: 33});
+    expect(invaders.getSpriteParams(4)).toEqual({sX: 0, sY: 0, sW: 51, sH: 34});
+
+    expect(invaders.animateState).toBe(true);
+  }, invaders.timeout);
+});
+
+test('invaders rect is inside canvas by x', () => {
+  const {rectMarginX} = invaders.store.invaders;
+  invaders.calcInitRectCoords();
+
+  expect(invaders.isInsideCanvasByX()).toBe(true);
+
+  invaders.moveDirection = 'left';
+  invaders.store.invaders.rectCoords.minX = rectMarginX;
+  expect(invaders.isInsideCanvasByX()).toBe(false);
+
+  invaders.moveDirection = 'right';
+  invaders.store.invaders.rectCoords.maxX = invaders.store.ctxWidth - rectMarginX;
+  expect(invaders.isInsideCanvasByX()).toBe(false);
+});
+
+test('invaders rect is inside canvas by y', () => {
+  const {rectMarginY} = invaders.store.invaders;
+  invaders.calcInitRectCoords();
+
+  expect(invaders.isInsideCanvasByY()).toBe(true);
+
+  invaders.store.invaders.rectCoords.maxY = invaders.store.ctxHeight - rectMarginY;
+  expect(invaders.isInsideCanvasByY()).toBe(false);
+});
+
 test('invaders calc coords', () => {
   const dx = 10;
   const dy = 10;
@@ -42,7 +99,6 @@ test('invaders calc coords', () => {
     });
   });
 });
-
 
 test.skip('move', () => {
   const {x: initX, y: initY} = invaders.store.invaders.initCoords;

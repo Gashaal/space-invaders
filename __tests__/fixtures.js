@@ -37,6 +37,8 @@ export default {
     rectCoords: {
       minY: 35,
     },
+    rectMarginX: 40,
+    rectMarginY: 100,
     list: [],
     spritesParams: {
       bottom: [{sX: 0, sY: 68, sW: 50, sH: 32}, {sX: 0, sY: 34, sW: 50, sH: 32}],

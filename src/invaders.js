@@ -72,37 +72,75 @@ class Invaders {
     };
   }
 
-  move() {
-    const {rectCoords, rectMargin, params: {dx, dy, width}} = this.store.invaders;
-    let moveDy = 0;
-    let moveDx;
+  isInsideCanvasByX() {
+    const {rectCoords: {minX, maxX}, rectMarginX, params: {dx, width}} = this.store.invaders;
 
     if (this.moveDirection === 'left') {
-      if ((rectCoords.minX - dx) >= rectMargin) {
-        moveDx = -dx;
-      } else {
-        moveDx = 0;
-        moveDy = dy;
-        this.moveDirection = 'right';
-      }
+      return (minX - dx) >= rectMarginX;
     } else {
-      if ((rectCoords.maxX + dx) <= (this.store.ctxWidth - rectMargin - width)) {
-        moveDx = dx;
-      } else {
-        moveDx = 0;
+      return (maxX + dx) <= (this.store.ctxWidth - rectMarginX - width);
+    }
+  }
+
+  isInsideCanvasByY() {
+    const {rectCoords: {maxY}, rectMarginY, params: {dy}} = this.store.invaders;
+    return ((maxY + dy) <= (this.store.ctxHeight - rectMarginY));
+  }
+
+  move() {
+    const {dx, dy} = this.store.invaders.params;
+    let moveDx, moveDy;
+
+    if (this.isInsideCanvasByX()) {
+      moveDy = 0;
+      moveDx = this.moveDirection === 'left' ? -dx : dx;
+    } else {
+      moveDx = 0;
+
+      if (this.isInsideCanvasByY()) {
         moveDy = dy;
-        this.moveDirection = 'left';
+        this.moveDirection = this.moveDirection === 'left' ? 'right' : 'left';
+      } else {
+        // game over
       }
     }
 
     this.calcCoords(moveDx, moveDy);
   }
 
+  toggleAnimate() {
+    if ((new Date - this.delay) > this.timeout) {
+      this.delay = new Date();
+      this.animateState = !this.animateState;
+    }
+  }
+
+  getSpriteParams(rowIndex) {
+    const {spritesParams} = this.store.invaders;
+
+    let rowSpriteParams;
+    switch (rowIndex) {
+      case 0:
+      case 1:
+        rowSpriteParams = spritesParams.bottom;
+        break;
+      case 2:
+      case 3:
+        rowSpriteParams = spritesParams.middle;
+        break;
+      case 4:
+        rowSpriteParams = spritesParams.top;
+        break;
+    }
+
+    this.toggleAnimate();
+    return this.animateState ? rowSpriteParams[0] : rowSpriteParams[1];
+  }
+
   draw() {
     const {
       sprite,
       invaders: {
-        spritesParams,
         params: {
           rows,
           columns,
@@ -113,26 +151,7 @@ class Invaders {
     } = this.store;
 
     for (let i = 0; i < rows; i++) {
-      let rowSpriteParams;
-      switch (i) {
-        case 0:
-        case 1:
-          rowSpriteParams = spritesParams.bottom;
-          break;
-        case 2:
-        case 3:
-          rowSpriteParams = spritesParams.middle;
-          break;
-        case 4:
-          rowSpriteParams = spritesParams.top;
-          break;
-      }
-
-      if ((new Date - this.delay) > this.timeout) {
-        this.delay = new Date();
-        this.animateState = !this.animateState;
-      }
-      const {sX, sY, sW, sH} = this.animateState ? rowSpriteParams[0] : rowSpriteParams[1];
+      const {sX, sY, sW, sH} = this.getSpriteParams(i);
 
       for (let j = 0; j < columns; j++) {
         const {x: dx, y: dy} = this.store.invaders.list[i][j];
