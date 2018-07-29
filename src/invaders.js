@@ -6,16 +6,10 @@ class Invaders {
     this.animateState = false;
     this.timeout = 750;
     this.delay = new Date();
+    this.shellsLimit = 2;
 
     this.calcInitRectCoords();
     this.calcInitialCoords();
-  }
-
-  calcLeftCornerCoords() {
-    const {columns, width, marginX} = this.store.invaders.params;
-    const invadersRectWidth = columns * width + (columns - 1) * marginX;
-
-    this.store.invaders.initCoords.x = (this.store.ctxWidth - invadersRectWidth) / 2;
   }
 
   calcInitRectCoords() {
@@ -45,12 +39,15 @@ class Invaders {
       for (let j = 0; j < params.columns; j++) {
         let x = initX + (params.width + params.marginX) * j;
 
-        invadersList[i].push({x: x, y: y});
+        invadersList[i].push({x: x, y: y, isAlive: true});
       }
     }
   }
 
   calcCoords(dx, dy) {
+    const width = this.store.invaders.params.width;
+    const height = this.store.invaders.params.height;
+    const shellW = this.store.invaders.shellW;
     let xList = [];
     let yList = [];
 
@@ -58,6 +55,14 @@ class Invaders {
       invadersRow.forEach((invader) => {
         invader.x += dx;
         invader.y += dy;
+
+        if (this.isCanFire()) {
+          this.store.invaders.shells.push({
+            x: invader.x + width / 2 - shellW / 2,
+            y: invader.y + height,
+            isFly: true,
+          });
+        }
 
         xList.push(invader.x);
         yList.push(invader.y);
@@ -70,6 +75,10 @@ class Invaders {
       minY: Math.min.apply(null, yList),
       maxY: Math.max.apply(null, yList),
     };
+  }
+
+  isCanFire() {
+    return (Math.random() * 100 > 99) && this.store.invaders.shells.length < this.shellsLimit;
   }
 
   isInsideCanvasByX() {
@@ -89,7 +98,8 @@ class Invaders {
 
   move() {
     const {dx, dy} = this.store.invaders.params;
-    let moveDx, moveDy;
+    let moveDx;
+    let moveDy;
 
     if (this.isInsideCanvasByX()) {
       moveDy = 0;
@@ -138,6 +148,11 @@ class Invaders {
   }
 
   draw() {
+    this.drawInvaders();
+    this.drawShells();
+  }
+
+  drawInvaders() {
     const {
       sprite,
       invaders: {
@@ -154,13 +169,31 @@ class Invaders {
       const {sX, sY, sW, sH} = this.getSpriteParams(i);
 
       for (let j = 0; j < columns; j++) {
-        const {x: dx, y: dy} = this.store.invaders.list[i][j];
+        const {x: dx, y: dy, isAlive} = this.store.invaders.list[i][j];
 
-        this.ctx.drawImage(sprite, sX, sY, sW, sH, dx, dy, dWidth, dHeight);
+        if (isAlive) {
+          this.ctx.drawImage(sprite, sX, sY, sW, sH, dx, dy, dWidth, dHeight);
+        } else {
+
+        }
       }
     }
 
     this.move();
+  }
+
+  drawShells() {
+    const {shells, shellDy, shellW, shellH, shellColor} = this.store.invaders;
+
+    this.ctx.fillStyle = shellColor;
+    shells.forEach((shell, i) => {
+      if (shell.y > this.store.ctxHeight) {
+        shells.splice(i, 1);
+      } else {
+        this.ctx.fillRect(shell.x, shell.y, shellW, shellH);
+        shell.y += shellDy;
+      }
+    });
   }
 }
 

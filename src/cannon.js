@@ -37,9 +37,13 @@ export default class Cannon {
     const {shells, shellDy, shellW, shellH, shellColor} = this.store.cannon;
 
     this.ctx.fillStyle = shellColor;
-    shells.forEach((shell) => {
-      this.ctx.fillRect(shell.x, shell.y, shellW, shellH);
-      shell.y -= shellDy;
+    shells.forEach((shell, i) => {
+      if (shell.isFly) {
+        this.ctx.fillRect(shell.x, shell.y, shellW, shellH);
+        shell.y -= shellDy;
+      } else {
+        shells.splice(i, 1);
+      }
     });
   }
 
@@ -57,6 +61,7 @@ export default class Cannon {
     this.store.cannon.shells.push({
       x: x + width / 2 - shellW / 2,
       y: y,
+      isFly: true,
     });
   }
 }

@@ -1,5 +1,6 @@
 import Cannon from './cannon';
 import Invaders from './invaders';
+import Collisions from "./collisions";
 
 class Game {
   constructor(ctx, store) {
@@ -9,6 +10,7 @@ class Game {
 
     this.cannon = new Cannon(ctx, store);
     this.invaders = new Invaders(ctx, store);
+    this.collisions = new Collisions(store);
     document.addEventListener('keydown', this.cannonControls.bind(this), false);
   }
 
@@ -19,6 +21,7 @@ class Game {
   draw() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
+    this.collisions.detect();
     this.cannon.draw();
     this.invaders.draw();
 

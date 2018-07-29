@@ -13,13 +13,19 @@ export default {
     shellW: 5,
     shellH: 5,
     shellColor: '#73f440',
-    shells: [],
+    shells: [{
+      x: 50,
+      y: 50,
+      isFly: true,
+    }],
     sprite: {
       sX: 0,
       sY: 204,
       sW: 62,
       sH: 32,
     },
+    x: 15,
+    y: 15,
   },
   invaders: {
     params: {
@@ -29,27 +35,33 @@ export default {
       marginY: 5,
       width: 51,
       height: 34,
-      dx: 0.5,
+      dx: 2,
       dy: 15, // height + marginY
-      stepX: 2,
+      stepX: 8,
       stepY: 8,
     },
-    shellDy: 5,
-    shellW: 5,
-    shellH: 5,
-    shellColor: '#73f440',
-    shells: [],
     rectCoords: {
       minY: 35,
     },
-    rectMarginX: 40,
-    rectMarginY: 100,
-    list: [],
-    spritesParams: {
-      bottom: [{sX: 0, sY: 68, sW: 50, sH: 32}, {sX: 0, sY: 34, sW: 50, sH: 32}],
-      middle: [{sX: 0, sY: 137, sW: 50, sH: 33}, {sX: 0, sY: 170, sW: 50, sH: 34}],
-      top: [{sX: 0, sY: 0, sW: 51, sH: 34}, {sX: 0, sY: 102, sW: 51, sH: 34}],
-    },
+    shells: [
+      {
+        x: 20,
+        y: 20,
+        isFly: true,
+      },
+    ],
+    list: [
+      {
+        x: 50,
+        y: 50,
+        isAlive: true,
+      },
+      {
+        x: 80,
+        y: 50,
+        isAlive: true,
+      },
+    ],
   },
   sprite: sprite,
 };
