@@ -4,20 +4,64 @@ sprite.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAEACAYAAAADRnAG
 export default {
   ctxWidth: 800,
   ctxHeight: 600,
-  marginTop: 35,
-  marginLeft: 20,
-  marginBottom: 50,
   cannon: {
-    width: 32,
-    height: 16,
+    width: 62,
+    height: 32,
     lives: 3,
-    shells: [],
+    dx: 7,
+    shellDy: 5,
+    shellW: 5,
+    shellH: 5,
+    shellColor: '#73f440',
+    shells: [{
+      x: 50,
+      y: 50,
+      isFly: true,
+    }],
+    sprite: {
+      sX: 0,
+      sY: 204,
+      sW: 62,
+      sH: 32,
+    },
+    x: 15,
+    y: 15,
   },
   invaders: {
-    rows: 5,
-    columns: 11,
-    shells: [],
-    list: [],
+    params: {
+      rows: 5,
+      columns: 7,
+      marginX: 20,
+      marginY: 5,
+      width: 51,
+      height: 34,
+      dx: 2,
+      dy: 15, // height + marginY
+      stepX: 8,
+      stepY: 8,
+    },
+    rectCoords: {
+      minY: 35,
+    },
+    shells: [
+      {
+        x: 20,
+        y: 20,
+        isFly: true,
+      },
+    ],
+    list: [
+      {
+        x: 50,
+        y: 50,
+        isAlive: true,
+      },
+      {
+        x: 80,
+        y: 50,
+        isAlive: true,
+      },
+    ],
   },
   sprite: sprite,
 };

@@ -44,5 +44,8 @@
       "node_modules",
       "src"
     ]
+  },
+  "dependencies": {
+    "@types/jest": "^23.3.1"
   }
 }

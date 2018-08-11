@@ -4,102 +4,67 @@ import Invaders from '../src/invaders';
 let invaders;
 
 beforeAll(() => {
-  document.body.innerHTML = '<canvas id="game-canvas" width="480" height="320"></canvas>';
+  document.body.innerHTML = '<canvas id="game-canvas" width="800" height="600"></canvas>';
   const ctx = document.getElementById('game-canvas').getContext('2d');
   invaders = new Invaders(ctx, fixtures);
 });
 
-test('invaders has ctx', () => {
-  expect(invaders.ctx).toBeDefined();
-});
+test('calc invaders init rect coords', () => {
+  invaders.calcInitRectCoords();
 
-test('invaders has store', () => {
-  expect(invaders.store).toEqual(fixtures);
-});
-
-test('invaders calc initial left corner coords for invaders rect', () => {
-  invaders.calcLeftCornerCoords();
-  expect(invaders.store.invaders.initCoords.x).toBe(100);
-  expect(invaders.store.invaders.initCoords.y).toBe(35);
-});
-
-test('invaders calc coords', () => {
-  const dx = 10;
-  const dy = 10;
-  const invadersList = invaders.store.invaders.list.slice(0);
-  invaders.calcCoords(dx, dy);
-
-  invaders.store.invaders.list.forEach((invaderRow, i) => {
-    expect(Array.isArray(invaderRow)).toBeTruthy();
-    invaderRow.forEach((invader, j) => {
-      expect(invader.x).toBe(invadersList[i][j].x + dx);
-      expect(invader.y).toBe(invadersList[i][j].y + dy);
-    });
-  });
+  expect(invaders.store.invaders.rectCoords.minX).toBe(161.5);
+  expect(invaders.store.invaders.rectCoords.maxX).toBe(638.5);
+  expect(invaders.store.invaders.rectCoords.minY).toBe(35);
+  expect(invaders.store.invaders.rectCoords.maxY).toBe(225);
 });
 
 test('invaders initial coords', () => {
-  const {x: initX, y: initY} = invaders.store.invaders.initCoords;
-  invaders.calcInitialCoords();
-  const params = invaders.store.invaders.params;
-  const invadersList = invaders.store.invaders.list;
-  invaders.store.invaders.list = [];
+  const topLeftInvader = invaders.store.invaders.list[0];
+  const bottomRightInvader = invaders.store.invaders.list[34];
 
-  expect(Array.isArray(invadersList)).toBeTruthy();
-  expect(invadersList.length).toBe(params.rows);
-
-  for (let i = 0; i <= params.rows.length; i++) {
-    let y = initY + (params.height + params.marginY) * i;
-
-    expect(Array.isArray(invadersList[i])).toBeTruthy();
-    expect(invadersList[i].length).toBe(params.columns);
-
-    for (let j = 0; j <= params.columns.length; j++) {
-      let x = initX + (params.width + params.marginX) * j;
-
-      expect(invadersList[i][j]).toBeDefined();
-      expect(invadersList[i][j].x).toBe(x);
-      expect(invadersList[i][j].y).toBe(y);
-    }
-  }
-
-  testInvadersCoords(initX, initY);
+  expect(topLeftInvader.x).toBe(161.5);
+  expect(topLeftInvader.y).toBe(35);
+  expect(bottomRightInvader.x).toBe(587.5);
+  expect(bottomRightInvader.y).toBe(191);
 });
 
-test.skip('move', () => {
-  const {x: initX, y: initY} = invaders.store.invaders.initCoords;
-  invaders.store.invaders.dxColumn = 0;
-  invaders.store.invaders.dyRow = 0;
-  invaders.store.invaders.list = [];
-  invaders.calcInitialCoords();
+test('toogle animate sprite', () => {
+  invaders.delay = new Date();
 
-  invaders.move();
-  testInvadersCoords(initX + invaders.store.invaders.dx, initY + invaders.store.invaders.dy);
+  invaders.toggleAnimate();
+  expect(invaders.animateState).toBe(false);
+
+  setTimeout(() => {
+    invaders.toggleAnimate();
+    expect(invaders.animateState).toBe(true);
+  }, invaders.timeout);
 });
 
-test('draw without errors', () => {
-  expect(invaders.draw.bind(invaders)).not.toThrow();
+test('invaders rect is inside canvas by x', () => {
+  const {rectMarginX} = invaders.store.invaders;
+  invaders.calcInitRectCoords();
+
+  expect(invaders.isInsideCanvasByX()).toBe(true);
+
+  invaders.moveDirection = 'left';
+  invaders.store.invaders.rectCoords.minX = rectMarginX;
+  expect(invaders.isInsideCanvasByX()).toBe(false);
+
+  invaders.moveDirection = 'right';
+  invaders.store.invaders.rectCoords.maxX = invaders.store.ctxWidth - rectMarginX;
+  expect(invaders.isInsideCanvasByX()).toBe(false);
 });
 
-function testInvadersCoords(curX, curY) {
-  const params = invaders.store.invaders.params;
-  const invadersList = invaders.store.invaders.list;
+test('invaders rect is inside canvas by y', () => {
+  const {rectMarginY} = invaders.store.invaders;
+  invaders.calcInitRectCoords();
 
-  expect(Array.isArray(invadersList)).toBeTruthy();
-  expect(invadersList.length).toBe(params.rows);
+  expect(invaders.isInsideCanvasByY()).toBe(true);
 
-  for (let i = 0; i <= params.rows.length; i++) {
-    let y = initY + (params.height + params.marginY) * i;
+  invaders.store.invaders.rectCoords.maxY = invaders.store.ctxHeight - rectMarginY;
+  expect(invaders.isInsideCanvasByY()).toBe(false);
+});
 
-    expect(Array.isArray(invadersList[i])).toBeTruthy();
-    expect(invadersList[i].length).toBe(params.columns);
-
-    for (let j = 0; j <= params.columns.length; j++) {
-      let x = initX + (params.width + params.marginX) * j;
-
-      expect(invadersList[i][j]).toBeDefined();
-      expect(invadersList[i][j].x).toBe(x);
-      expect(invadersList[i][j].y).toBe(y);
-    }
-  }
-}
+test.skip('draw without errors', () => {
+  expect(invaders.draw).not.toThrow();
+});
