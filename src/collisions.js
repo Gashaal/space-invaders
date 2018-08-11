@@ -10,24 +10,25 @@ export default class Collisions {
 
   detectCannonShells() {
     this.store.cannon.shells.forEach((shell) => {
-      this.store.invaders.list.forEach((invadersRow) => {
-        invadersRow.forEach((invader) => {
-          if (Collisions.isHit(shell.x, shell.y, invader.x, invader.x + 51, invader.y, invader.y + 34)) {
-            shell.isFly = false;
-            invader.isAlive = false;
-          }
-        });
+      this.store.invaders.list.forEach((invader) => {
+        const {x, y, width, height} = invader;
+
+        if (invader.isAlive && Collisions.isHit(shell.x, shell.y, x, x + width, y, y + height)) {
+          shell.isFly = false;
+          invader.isAlive = false;
+        }
       });
     });
   }
 
   detectInvadersShells() {
-    const {x: cannonX, y: cannonY} = this.store.cannon;
+    const {x, y, width, height} = this.store.cannon;
 
     this.store.invaders.shells.forEach((shell) => {
-      if (Collisions.isHit(shell.x, shell.y, cannonX, cannonX + 62, cannonY, cannonY + 32)) {
+      if (Collisions.isHit(shell.x, shell.y, x, x + width, y, y + height)) {
         shell.isFly = false;
         this.store.cannon.lives -= 1;
+        this.store.cannon.isKilled = true;
       }
     });
   }

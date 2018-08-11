@@ -19,8 +19,8 @@ test('calc invaders init rect coords', () => {
 });
 
 test('invaders initial coords', () => {
-  const topLeftInvader = invaders.store.invaders.list[0][0];
-  const bottomRightInvader = invaders.store.invaders.list[4][6];
+  const topLeftInvader = invaders.store.invaders.list[0];
+  const bottomRightInvader = invaders.store.invaders.list[34];
 
   expect(topLeftInvader.x).toBe(161.5);
   expect(topLeftInvader.y).toBe(35);
@@ -36,26 +36,6 @@ test('toogle animate sprite', () => {
 
   setTimeout(() => {
     invaders.toggleAnimate();
-    expect(invaders.animateState).toBe(true);
-  }, invaders.timeout);
-});
-
-test('get sprite params', () => {
-  invaders.delay = new Date();
-
-  expect(invaders.getSpriteParams(0)).toEqual({sX: 0, sY: 34, sW: 50, sH: 32});
-  expect(invaders.getSpriteParams(1)).toEqual({sX: 0, sY: 34, sW: 50, sH: 32});
-  expect(invaders.getSpriteParams(2)).toEqual({sX: 0, sY: 170, sW: 50, sH: 34});
-  expect(invaders.getSpriteParams(3)).toEqual({sX: 0, sY: 170, sW: 50, sH: 34});
-  expect(invaders.getSpriteParams(4)).toEqual({sX: 0, sY: 102, sW: 51, sH: 34});
-
-  setTimeout(() => {
-    expect(invaders.getSpriteParams(0)).toEqual({sX: 0, sY: 68, sW: 50, sH: 32});
-    expect(invaders.getSpriteParams(1)).toEqual({sX: 0, sY: 68, sW: 50, sH: 32});
-    expect(invaders.getSpriteParams(2)).toEqual({sX: 0, sY: 137, sW: 50, sH: 33});
-    expect(invaders.getSpriteParams(3)).toEqual({sX: 0, sY: 137, sW: 50, sH: 33});
-    expect(invaders.getSpriteParams(4)).toEqual({sX: 0, sY: 0, sW: 51, sH: 34});
-
     expect(invaders.animateState).toBe(true);
   }, invaders.timeout);
 });
