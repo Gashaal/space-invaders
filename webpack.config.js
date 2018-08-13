@@ -11,6 +11,14 @@ module.exports = {
     contentBase: './dist',
     hot: true,
   },
+  module: {
+    rules: [
+      {
+        test: /\.txt$/,
+        use: 'raw-loader',
+      },
+    ],
+  },
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
