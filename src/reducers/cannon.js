@@ -8,54 +8,78 @@ import {
 } from '../actions/cannon';
 
 const initialState = {
-  width: 32,
-  height: 32,
+  cannonWidth: 32,
+  cannonHeight: 32,
   lives: 3,
-  shells: [],
-  x: 0,
-  y: 0,
+  cannonShells: [],
+  cannonX: 0,
+  cannonY: 0,
+  cannonIsKilled: false,
 };
+
+function setSize(state, action) {
+  let {cannonWidth, cannonHeight} = state;
+  const {ratio} = action;
+
+  cannonWidth *= ratio;
+  cannonHeight *= ratio;
+  return Object.assign({}, state, {cannonWidth, cannonHeight});
+}
+
+function calcInitialCoords(state, action) {
+  const {cannonWidth, cannonHeight} = state;
+  const {canvasWidth, canvasHeight, marginBottom} = action;
+
+  const cannonX = canvasWidth / 2 - cannonWidth / 2;
+  const cannonY = canvasHeight - cannonHeight - marginBottom;
+
+  return Object.assign({}, state, {cannonX, cannonY});
+}
+
+function moveLeft(state, action) {
+  const cannonX = state.cannonX - action.dx;
+  return Object.assign({}, state, {cannonX});
+}
+
+function moveRight(state, action) {
+  const cannonX = state.cannonX + action.dx;
+  return Object.assign({}, state, {cannonX});
+}
+
+function fire(state, action) {
+  const {cannonX, cannonY, cannonWidth, cannonShells} = state;
+  const {shellWidth, shellHeight} = action;
+  cannonShells.push({
+    x: cannonX + cannonWidth / 2,
+    y: cannonY,
+    isFly: true,
+    width: shellWidth,
+    height: shellHeight,
+  });
+  return Object.assign({}, state, {cannonShells});
+}
+
+function shellFly(state, action) {
+  const {cannonShells} = state;
+  const {i, dy} = action;
+  cannonShells[i].y -= dy;
+  return Object.assign({}, state, {cannonShells});
+}
 
 export default function(state=initialState, action) {
   switch (action.type) {
-    case SET_SIZE: {
-      const width = state.width * action.ratio;
-      const height = state.height * action.ratio;
-      return Object.assign({}, state, {width, height});
-      break;
-    }
-    case CALC_INITIAL_COORDS: {
-      const {width, height} = state;
-      const {canvasWidth, canvasHeight, marginBottom} = action;
-
-      const x = canvasWidth / 2 - width / 2;
-      const y = canvasHeight - height - marginBottom;
-
-      return Object.assign({}, state, {x, y});
-      break;
-    }
+    case SET_SIZE:
+      return setSize(state, action);
+    case CALC_INITIAL_COORDS:
+      return calcInitialCoords(state, action);
     case MOVE_LEFT:
-      return Object.assign({}, state, {x: state.x - action.dx});
-      break;
+      return moveLeft(state, action);
     case MOVE_RIGHT:
-      return Object.assign({}, state, {x: state.x + action.dx});
-      break;
-    case FIRE: {
-      const {x, y, width, shells} = state;
-      shells.push({
-        x: x + width / 2,
-        y,
-        isFly: true,
-        width: action.shellWidth,
-        height: action.shellHeight,
-      });
-      return Object.assign({}, state, {shells: shells});
-      break;
-    }
+      return moveRight(state, action);
+    case FIRE:
+      return fire(state, action);
     case SHELL_FLY:
-      const {shells} = state;
-      shells[action.i].y -= action.dy;
-      return Object.assign({}, state, {shells})
+      return shellFly(state, action);
     default:
       return state;
   }

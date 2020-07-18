@@ -1,6 +1,3 @@
-import {createStore} from 'redux';
-import imageData from './images/hero.txt';
-
 import {
   setSize,
   calcInitialCoords,
@@ -9,22 +6,21 @@ import {
   fire,
   shellFly,
 } from './actions/cannon';
-import cannonReducer from './reducers/cannon';
+
+import imageData from './images/hero.txt';
 
 export default class Cannon {
-  constructor(ctx, store, ratioX=1, ratioY=1) {
+  constructor(ctx, store, state, ratioX=1, ratioY=1) {
     this.ctx = ctx;
     this.store = store;
+    this.state = store.getState();
 
-    this.storeReducer = createStore(cannonReducer);
-
-    this.state = this.storeReducer.getState();
-    this.storeReducer.subscribe(() => {
-      this.state = this.storeReducer.getState();
+    this.store.subscribe(() => {
+      this.state = this.store.getState();
     });
 
-    this.storeReducer.dispatch(setSize(ratioX));
-    this.storeReducer.dispatch(calcInitialCoords(800, 600, 50));
+    this.store.dispatch(setSize(ratioX));
+    this.store.dispatch(calcInitialCoords(800, 600, 50));
 
     this.dx = 7 * ratioX;
     this.shellParams = {
@@ -50,23 +46,23 @@ export default class Cannon {
   }
 
   drawCannon() {
-    const {x, y, width, height, isKilled} = this.state;
-    if (isKilled) {
-      this.reset();
-      this.ctx.drawImage(this.store.boomSprite, x, y, width, height);
-    } else {
-      this.ctx.drawImage(this.sprite, x, y, width, height);
-    }
+    const {cannonX, cannonY, cannonWidth, cannonHeight, cannonIsKilled} = this.state;
+    this.ctx.drawImage(this.sprite, cannonX, cannonY, cannonWidth, cannonHeight);
+    // if (isKilled) {
+    //   this.reset();
+    //   this.ctx.drawImage(this.store.boomSprite, x, y, width, height);
+    // } else {
+    // }
   }
 
   drawShells() {
     const {dy, color} = this.shellParams;
 
     this.ctx.fillStyle = color;
-    this.state.shells.forEach((shell, i) => {
+    this.state.cannonShells.forEach((shell, i) => {
       if (shell.isFly) {
         this.ctx.fillRect(shell.x, shell.y, shell.width, shell.height);
-        this.storeReducer.dispatch(shellFly(i, dy));
+        this.store.dispatch(shellFly(i, dy));
       } else {
         //this.store.cannon.shells.splice(i, 1);
       }
@@ -74,18 +70,18 @@ export default class Cannon {
   }
 
   moveLeft() {
-    if (!this.state.isKilled) {
-      this.storeReducer.dispatch(moveLeft(this.dx));
+    if (!this.state.cannonIsKilled) {
+      this.store.dispatch(moveLeft(this.dx));
     }
   }
 
   moveRight() {
-    if (!this.state.isKilled) {
-      this.storeReducer.dispatch(moveRight(this.dx));
+    if (!this.state.cannonIsKilled) {
+      this.store.dispatch(moveRight(this.dx));
     }
   }
 
   fire() {
-    this.storeReducer.dispatch(fire(this.shellParams.width, this.shellParams.height));
+    this.store.dispatch(fire(this.shellParams.width, this.shellParams.height));
   }
 }
