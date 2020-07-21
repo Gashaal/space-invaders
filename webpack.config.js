@@ -1,27 +1,27 @@
-const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
+const mode = process.env.NODE_ENV;
+
+function getPlugins() {
+  const plugins = [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({template: "./src/index.html"})
+  ];
+
+  return plugins;
+}
 
 module.exports = {
-  mode: process.env.NODE_ENV,
-  entry: './src/index.js',
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: './dist',
-    hot: true,
+  mode: mode,
+  devtool: mode === "development" ? "inline-source-map" : "(none)",
+  entry: {
+    main: "./src/index.js"
   },
-  plugins: [
-    new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin({
-      title: 'Development',
-      template: './index.html',
-    }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-  ],
+  plugins: getPlugins(mode),
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
+    filename: "[name].[hash].js",
+    path: path.resolve(__dirname, "build")
+  }
 };

@@ -1,5 +1,5 @@
 import fixtures from './fixtures-collisions';
-import Collisions from '../src/collisions';
+import Collisions from '../collisions';
 
 let collisions;
 

@@ -4,9 +4,9 @@
   "description": "clone space invaders",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest",
-    "start": "NODE_ENV=development webpack-dev-server --open",
-    "build": "NODE_ENV=production webpack"
+    "start": "webpack-dev-server --open",
+    "build": "webpack",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -24,28 +24,15 @@
   },
   "homepage": "https://github.com/Gashaal/space-invaders#readme",
   "devDependencies": {
-    "babel-jest": "^22.4.3",
-    "babel-preset-env": "^1.7.0",
-    "clean-webpack-plugin": "^0.1.19",
-    "eslint": "^4.19.1",
-    "eslint-config-google": "^0.9.1",
-    "html-webpack-plugin": "^3.2.0",
-    "jest": "^22.4.3",
-    "webpack": "^4.12.0",
-    "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
-    "testRegex": "(/__tests__/.*(test|spec))\\.js?$",
-    "moduleDirectories": [
-      "node_modules",
-      "src"
-    ]
-  },
-  "dependencies": {
-    "@types/jest": "^23.3.1"
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "babel-jest": "^26.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "eslint": "^7.5.0",
+    "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   }
 }

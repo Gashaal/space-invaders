@@ -1,5 +1,5 @@
 import fixtures from './fixtures';
-import Invaders from '../src/invaders';
+import Invaders from '../invaders';
 
 let invaders;
 

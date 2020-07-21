@@ -1,5 +1,5 @@
 import fixtures from './fixtures';
-import Cannon from '../src/cannon';
+import Cannon from '../cannon';
 
 let cannon;
 
