@@ -9,7 +9,7 @@ export default {
   marginBottom: 50,
   cannon: {
     width: 32,
-    height: 16,
+    height: 32,
     lives: 3,
     shells: [],
   },

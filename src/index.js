@@ -1,6 +1,12 @@
 import store from './store';
 import Game from './game';
 
+// TODO:
+// start, pause, end;
+// score;
+// взрывать пулю, если она не попадает;
+// изменение скорости движения захватчиков;
+
 const canvas = document.getElementById('game-canvas');
 // const ratioX = window.innerWidth / canvas.width;
 // const ratioY = window.innerHeight / canvas.height;

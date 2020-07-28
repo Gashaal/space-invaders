@@ -1,7 +1,14 @@
-import fixtures from './fixtures';
+import fixtures from '../store';
 import Cannon from '../cannon';
 
+// Что я хочу проверить?
+// пушка находиться посередине экрана
+// пушка двигается  - если не убита
+// пушка стреляет - если не убита
+
+
 let cannon;
+let store = { ...fixtures };
 
 beforeEach(() => {
   document.body.innerHTML = '<canvas id="game-canvas" width="480" height="320"></canvas>';
@@ -9,31 +16,28 @@ beforeEach(() => {
   cannon = new Cannon(ctx, fixtures);
 });
 
-test('calc cannon center coords', () => {
-  cannon.store.cannon.x = 0;
-  cannon.store.cannon.y = 0;
 
-  cannon.calcInitialCoords();
-  expect(cannon.store.cannon.x).toBe(369);
-  expect(cannon.store.cannon.y).toBe(533);
+test('calc cannon center coords', () => {
+  expect(store.cannon.x).toBe(384);
+  expect(store.cannon.y).toBe(518);
 });
 
 test('move right', () => {
-  const x = cannon.store.cannon.x;
+  const { x } = store.cannon;
 
   cannon.moveRight();
-  expect(cannon.store.cannon.x).toBe(x + cannon.dx);
+  expect(store.cannon.x).toBe(x + cannon.dx);
 });
 
 test('move left', () => {
-  const x = cannon.store.cannon.x;
+  const { x } = store.cannon;
 
   cannon.moveLeft();
   expect(cannon.store.cannon.x).toBe(x - cannon.dx);
 });
 
 test('fire', () => {
-  const {x, y, width, shells} = cannon.store.cannon;
+  const {x, y, width, shells} = store.cannon;
 
   cannon.fire();
   expect(Array.isArray(shells)).toBe(true);
