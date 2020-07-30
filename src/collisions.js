@@ -28,7 +28,7 @@ export default class Collisions {
       if (Collisions.isHit(shell.x, shell.y, x, x + width, y, y + height)) {
         shell.isFly = false;
         this.store.cannon.lives -= 1;
-        this.store.cannon.isKilled = true;
+        this.store.cannon.isAlive = true;
       }
     });
   }

@@ -6,14 +6,13 @@ import Cannon from '../cannon';
 // пушка двигается  - если не убита
 // пушка стреляет - если не убита
 
-
 let cannon;
 let store = { ...fixtures };
 
 beforeEach(() => {
   document.body.innerHTML = '<canvas id="game-canvas" width="480" height="320"></canvas>';
   const ctx = document.getElementById('game-canvas').getContext('2d');
-  cannon = new Cannon(ctx, fixtures);
+  cannon = new Cannon(ctx, store);
 });
 
 
@@ -23,17 +22,17 @@ test('calc cannon center coords', () => {
 });
 
 test('move right', () => {
-  const { x } = store.cannon;
+  const { x, dx } = store.cannon;
 
   cannon.moveRight();
-  expect(store.cannon.x).toBe(x + cannon.dx);
+  expect(store.cannon.x).toBe(x + dx);
 });
 
 test('move left', () => {
-  const { x } = store.cannon;
+  const { x, dx } = store.cannon;
 
   cannon.moveLeft();
-  expect(cannon.store.cannon.x).toBe(x - cannon.dx);
+  expect(store.cannon.x).toBe(x - dx);
 });
 
 test('fire', () => {

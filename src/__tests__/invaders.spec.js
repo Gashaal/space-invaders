@@ -1,34 +1,43 @@
-import fixtures from './fixtures';
+import fixtures from '../store';
 import Invaders from '../invaders';
 
+// нарисовать захватчиков в нужных местах;
+// проверить, что они двигаются - вправа, влево, вниз
+
 let invaders;
+let store = { ...fixtures };
 
 beforeAll(() => {
   document.body.innerHTML = '<canvas id="game-canvas" width="800" height="600"></canvas>';
   const ctx = document.getElementById('game-canvas').getContext('2d');
-  invaders = new Invaders(ctx, fixtures);
+  invaders = new Invaders(ctx, store);
 });
 
 test('calc invaders init rect coords', () => {
-  invaders.calcInitRectCoords();
+  const { minX, maxX, minY, maxY } = store.invaders.rectCoords;
 
-  expect(invaders.store.invaders.rectCoords.minX).toBe(161.5);
-  expect(invaders.store.invaders.rectCoords.maxX).toBe(638.5);
-  expect(invaders.store.invaders.rectCoords.minY).toBe(35);
-  expect(invaders.store.invaders.rectCoords.maxY).toBe(225);
+  expect(minX).toBe(124);
+  expect(maxX).toBe(676);
+  expect(minY).toBe(35);
+  expect(maxY).toBe(215);
+});
+
+test("count of invaders", () => {
+  const {columns, rows, list} = store.invaders;
+  expect(list.length).toBe(columns * rows);
 });
 
 test('invaders initial coords', () => {
-  const topLeftInvader = invaders.store.invaders.list[0];
-  const bottomRightInvader = invaders.store.invaders.list[34];
+  const topLeftInvader = list[0];
+  const bottomRightInvader = list[54];
 
-  expect(topLeftInvader.x).toBe(161.5);
+  expect(topLeftInvader.x).toBe(124);
   expect(topLeftInvader.y).toBe(35);
-  expect(bottomRightInvader.x).toBe(587.5);
-  expect(bottomRightInvader.y).toBe(191);
+  expect(bottomRightInvader.x).toBe(644);
+  expect(bottomRightInvader.y).toBe(183);
 });
 
-test('toogle animate sprite', () => {
+test.skip('toogle animate sprite', () => {
   invaders.delay = new Date();
 
   invaders.toggleAnimate();

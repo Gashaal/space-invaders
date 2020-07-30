@@ -16,7 +16,7 @@ export default class Cannon {
 
   reset() {
     setTimeout(() => {
-      this.store.cannon.isKilled = false;
+      this.store.cannon.isAlive = false;
       this.calcInitialCoords();
     }, 500);
   }
@@ -27,10 +27,10 @@ export default class Cannon {
   }
 
   drawCannon() {
-    const { boomSprite, sprite } = this.store;
-    const {x, y, width, height, isKilled} = this.store.cannon;
+    const { boomSprite } = this.store;
+    const {x, y, width, height, isAlive, sprite} = this.store.cannon;
 
-    if (isKilled) {
+    if (isAlive) {
       this.reset();
       this.ctx.drawImage(boomSprite, x, y, width, height);
     } else {
@@ -42,25 +42,31 @@ export default class Cannon {
     const {dy, color} = this.store.cannon.shellParams;
 
     this.ctx.fillStyle = color;
-    this.store.cannon.shells.forEach((shell, i) => {
-      if (shell.isFly) {
-        this.ctx.fillRect(shell.x, shell.y, shell.width, shell.height);
-        shell.y -= dy;
+    this.store.cannon.shells.forEach(({isFly, x, y, width, height}, i) => {
+      if (isFly) {
+        this.ctx.fillRect(x, y, width, height);
+        this.store.cannon.shells[i].y -= dy;
       } else {
+        // TODO: придеться часто удалять элемент из середины массива, нехорошо
+        // может стоит сделать через хеш таблицу?
         this.store.cannon.shells.splice(i, 1);
       }
     });
   }
 
   moveRight() {
-    if (!this.store.cannon.isKilled) {
-      this.store.cannon.x += this.store.cannon.dx;
+    const { isAlive, dx } = this.store.cannon;
+
+    if (isAlive) {
+      this.store.cannon.x += dx;
     }
   }
 
   moveLeft() {
-    if (!this.store.cannon.isKilled) {
-      this.store.cannon.x -= this.store.cannon.dx;
+    const { isAlive, dx } = this.store.cannon;
+
+    if (isAlive) {
+      this.store.cannon.x -= dx;
     }
   }
 

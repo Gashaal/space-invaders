@@ -8,6 +8,7 @@ export default {
   marginLeft: 20,
   marginBottom: 50,
   cannon: {
+    isAlive: true,
     width: 32,
     height: 32,
     lives: 3,

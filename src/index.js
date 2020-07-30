@@ -6,6 +6,7 @@ import Game from './game';
 // score;
 // взрывать пулю, если она не попадает;
 // изменение скорости движения захватчиков;
+// перегревание пушки
 
 const canvas = document.getElementById('game-canvas');
 // const ratioX = window.innerWidth / canvas.width;
